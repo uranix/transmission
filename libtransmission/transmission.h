@@ -1315,7 +1315,8 @@ enum
 {
     TR_PRI_LOW    = -1,
     TR_PRI_NORMAL =  0, /* since NORMAL is 0, memset initializes nicely */
-    TR_PRI_HIGH   =  1
+    TR_PRI_HIGH   =  1,
+    TR_PRI_SEQ    =  2
 };
 
 /**

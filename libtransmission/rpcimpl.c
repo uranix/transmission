@@ -1277,7 +1277,10 @@ torrentSet (tr_session               * session,
       if (tr_variantDictFindInt (args_in, TR_KEY_peer_limit, &tmp))
         tr_torrentSetPeerLimit (tor, tmp);
 
-      if (!errmsg &&  tr_variantDictFindList (args_in, TR_KEY_priority_high, &files))
+      if (!errmsg && tr_variantDictFindList (args_in, TR_KEY_priority_seq, &files))
+        errmsg = setFilePriorities (tor, TR_PRI_SEQ, files);
+
+      if (!errmsg && tr_variantDictFindList (args_in, TR_KEY_priority_high, &files))
         errmsg = setFilePriorities (tor, TR_PRI_HIGH, files);
 
       if (!errmsg && tr_variantDictFindList (args_in, TR_KEY_priority_low, &files))
@@ -1778,6 +1781,14 @@ torrentAdd (tr_session               * session,
           tr_file_index_t fileCount;
           tr_file_index_t * files = fileListFromList (l, &fileCount);
           tr_ctorSetFilePriorities (ctor, files, fileCount, TR_PRI_HIGH);
+          tr_free (files);
+        }
+
+      if (tr_variantDictFindList (args_in, TR_KEY_priority_seq, &l))
+        {
+          tr_file_index_t fileCount;
+          tr_file_index_t * files = fileListFromList (l, &fileCount);
+          tr_ctorSetFilePriorities (ctor, files, fileCount, TR_PRI_SEQ);
           tr_free (files);
         }
 

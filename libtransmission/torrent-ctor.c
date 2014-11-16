@@ -57,6 +57,8 @@ struct tr_ctor
     tr_file_index_t         normalSize;
     tr_file_index_t       * high;
     tr_file_index_t         highSize;
+    tr_file_index_t       * seq;
+    tr_file_index_t         seqSize;
 };
 
 /***
@@ -201,6 +203,7 @@ tr_ctorSetFilePriorities (tr_ctor                * ctor,
     switch (priority) {
         case TR_PRI_LOW: myfiles = &ctor->low; mycount = &ctor->lowSize; break;
         case TR_PRI_HIGH: myfiles = &ctor->high; mycount = &ctor->highSize; break;
+        case TR_PRI_SEQ: myfiles = &ctor->seq; mycount = &ctor->seqSize; break;
         default /*TR_PRI_NORMAL*/: myfiles = &ctor->normal; mycount = &ctor->normalSize; break;
     }
 
@@ -220,6 +223,8 @@ tr_ctorInitTorrentPriorities (const tr_ctor * ctor, tr_torrent * tor)
         tr_torrentInitFilePriority (tor, ctor->normal[i], TR_PRI_NORMAL);
     for (i=0; i<ctor->highSize; ++i)
         tr_torrentInitFilePriority (tor, ctor->high[i], TR_PRI_HIGH);
+    for (i=0; i<ctor->seqSize; ++i)
+        tr_torrentInitFilePriority (tor, ctor->seq[i], TR_PRI_SEQ);
 }
 
 void
@@ -436,7 +441,7 @@ tr_ctorGetSession (const tr_ctor * ctor)
 static bool
 isPriority (int i)
 {
-    return (i==TR_PRI_LOW) || (i==TR_PRI_NORMAL) || (i==TR_PRI_HIGH);
+    return (i==TR_PRI_LOW) || (i==TR_PRI_NORMAL) || (i==TR_PRI_HIGH) || (i==TR_PRI_SEQ);
 }
 
 void
@@ -485,6 +490,7 @@ tr_ctorFree (tr_ctor * ctor)
     tr_free (ctor->notWant);
     tr_free (ctor->low);
     tr_free (ctor->high);
+    tr_free (ctor->seq);
     tr_free (ctor->normal);
     tr_free (ctor);
 }

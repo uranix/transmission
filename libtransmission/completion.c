@@ -13,6 +13,7 @@
 #include "completion.h"
 #include "torrent.h"
 #include "utils.h"
+#include "log.h"
 
 /***
 ****
@@ -282,9 +283,10 @@ tr_cpFileIsComplete (const tr_completion * cp, tr_file_index_t i)
     }
   else
     {
-      tr_block_index_t f, l;
+      tr_block_index_t f, l, fz;
       tr_torGetFileBlockRange (cp->tor, i, &f, &l);
-      return tr_bitfieldCountRange (&cp->blockBitfield, f, l+1) == (l+1-f);
+      fz = tr_bitfieldFirstZero (&cp->blockBitfield, f, l+1);
+      return fz == l+1;
     }
 }
 

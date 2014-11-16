@@ -260,6 +260,7 @@ tr_bandwidthAllocate (tr_bandwidth  * b,
 
       switch (io->priority)
         {
+          case TR_PRI_SEQ: /* fall through */
           case TR_PRI_HIGH:   tr_ptrArrayAppend (&high,   io); /* fall through */
           case TR_PRI_NORMAL: tr_ptrArrayAppend (&normal, io); /* fall through */
           default:            tr_ptrArrayAppend (&low,    io);

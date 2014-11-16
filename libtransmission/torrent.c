@@ -675,7 +675,7 @@ calculatePiecePriority (const tr_torrent * tor,
          before it's fully downloaded... */
       if (file->priority >= TR_PRI_NORMAL)
         if (file->firstPiece == piece || file->lastPiece == piece)
-          priority = TR_PRI_HIGH;
+          priority = MAX (priority, TR_PRI_HIGH);
     }
 
   return priority;
@@ -3237,6 +3237,34 @@ tr_torrentPieceCompleted (tr_torrent * tor, tr_piece_index_t pieceIndex)
     }
 }
 
+static void
+tr_cpFileShowStats (const tr_completion * cp, tr_file_index_t i)
+{
+  if (cp->tor->info.files[i].length)
+    {
+      tr_block_index_t f, l, fz;
+      char * fn = cp->tor->info.files[i].name;
+      tr_torGetFileBlockRange (cp->tor, i, &f, &l);
+      fz = tr_bitfieldFirstZero (&cp->blockBitfield, f, l+1);
+      if (fz > f && fz <= l)
+          tr_logAddTorDbg(cp->tor, "File %s has %2d%% contiguous", fn, 100 * (fz - f) / (l + 1 - f));
+    }
+}
+
+static void
+tr_torrentPrintFileStats (tr_torrent * tor, tr_piece_index_t pieceIndex)
+{
+  tr_file_index_t i;
+
+  for (i=0; i<tor->info.fileCount; ++i)
+    {
+      const tr_file * file = &tor->info.files[i];
+
+      if ((file->firstPiece <= pieceIndex) && (pieceIndex <= file->lastPiece))
+        tr_cpFileShowStats (&tor->completion, i);
+    }
+}
+
 void
 tr_torrentGotBlock (tr_torrent * tor, tr_block_index_t block)
 {
@@ -3260,6 +3288,7 @@ tr_torrentGotBlock (tr_torrent * tor, tr_block_index_t block)
           if (tr_torrentCheckPiece (tor, p))
             {
               tr_torrentPieceCompleted (tor, p);
+              tr_torrentPrintFileStats (tor, p);
             }
           else
             {

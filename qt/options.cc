@@ -450,6 +450,16 @@ Options :: onAccepted ()
           tr_variantListAddInt (l, i);
     }
 
+  // priority-seq
+  count = myPriorities.count (TR_PRI_SEQ);
+  if (count > 0)
+    {
+      tr_variant * l = tr_variantDictAddList (args, TR_KEY_priority_seq, count);
+      for (int i=0, n=myPriorities.size (); i<n; ++i)
+        if (myPriorities.at (i) == TR_PRI_SEQ)
+          tr_variantListAddInt (l, i);
+    }
+
   // maybe delete the source .torrent
   FileAdded * fileAdded = new FileAdded (tag, myAdd.readableName ());
   if (myTrashCheck->isChecked () && (myAdd.type==AddData::FILENAME))

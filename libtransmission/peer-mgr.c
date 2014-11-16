@@ -777,9 +777,8 @@ requestListAdd (tr_swarm * s, tr_block_index_t block, tr_peer * peer)
       assert (peer->pendingReqsToPeer >= 0);
     }
 
-  /*fprintf (stderr, "added request of block %lu from peer %s... "
-                     "there are now %d block\n",
-                     (unsigned long)block, tr_atomAddrStr (peer->atom), s->requestCount);*/
+  /* dbgmsg("added request of block %lu from peer %s... there are now %d requests in swarm",
+                     (unsigned long)block, tr_atomAddrStr (peer->atom), s->requestCount); */
 }
 
 static struct block_request *
@@ -940,6 +939,16 @@ setComparePieceByWeightTorrent (tr_swarm * s)
   weightReplication = s->pieceReplication;
 }
 
+static int
+comparePieceByIndex (const void * va, const void * vb)
+{
+  const struct weighted_piece * a = va;
+  const struct weighted_piece * b = vb;
+  if (a->index < b->index) return -1;
+  if (a->index > b->index) return 1;
+  return 0;
+}
+
 /* we try to create a "weight" s.t. high-priority pieces come before others,
  * and that partially-complete pieces come before empty ones. */
 static int
@@ -964,8 +973,12 @@ comparePieceByWeight (const void * va, const void * vb)
   /* secondary key: higher priorities go first */
   ia = tor->info.pieces[a->index].priority;
   ib = tor->info.pieces[b->index].priority;
+
   if (ia > ib) return -1;
   if (ia < ib) return 1;
+
+  if (ia == TR_PRI_SEQ) /* == ib */
+      return comparePieceByIndex(va, vb);
 
   /* tertiary key: rarest first. */
   ia = rep[a->index];
@@ -978,16 +991,6 @@ comparePieceByWeight (const void * va, const void * vb)
   if (a->salt > b->salt) return 1;
 
   /* okay, they're equal */
-  return 0;
-}
-
-static int
-comparePieceByIndex (const void * va, const void * vb)
-{
-  const struct weighted_piece * a = va;
-  const struct weighted_piece * b = vb;
-  if (a->index < b->index) return -1;
-  if (a->index > b->index) return 1;
   return 0;
 }
 
@@ -3837,6 +3840,7 @@ getPeerCandidateScore (const tr_torrent * tor, const struct peer_atom * atom, ui
   /* prefer peers belonging to a torrent of a higher priority */
   switch (tr_torrentGetPriority (tor))
     {
+      case TR_PRI_SEQ:
       case TR_PRI_HIGH:    i = 0; break;
       case TR_PRI_NORMAL:  i = 1; break;
       case TR_PRI_LOW:     i = 2; break;

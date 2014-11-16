@@ -81,6 +81,8 @@ void*  tr_bitfieldGetRaw (const tr_bitfield * b, size_t * byte_count);
 
 size_t  tr_bitfieldCountRange (const tr_bitfield*, size_t begin, size_t end);
 
+size_t  tr_bitfieldFirstZero (const tr_bitfield*, size_t begin, size_t end);
+
 size_t  tr_bitfieldCountTrueBits (const tr_bitfield * b);
 
 static inline bool

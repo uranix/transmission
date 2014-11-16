@@ -254,6 +254,7 @@ enum
   TR_KEY_priorities,
   TR_KEY_priority,
   TR_KEY_priority_high,
+  TR_KEY_priority_seq,
   TR_KEY_priority_low,
   TR_KEY_priority_normal,
   TR_KEY_private,

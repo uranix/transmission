@@ -252,6 +252,7 @@ static const struct tr_key_struct my_static[] =
   { "priorities", 10 },
   { "priority", 8 },
   { "priority-high", 13 },
+  { "priority-seq", 12 },
   { "priority-low", 12 },
   { "priority-normal", 15 },
   { "private", 7 },

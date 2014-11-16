@@ -1405,6 +1405,10 @@ Details :: onFilePriorityChanged (const QSet<int>& indices, int priority)
 
   switch (priority)
     {
+      case TR_PRI_SEQ:
+        key = TR_KEY_priority_seq;
+        break;
+
       case TR_PRI_LOW:
         key = TR_KEY_priority_low;
         break;

@@ -288,7 +288,8 @@ static inline bool tr_isPriority (tr_priority_t p)
 {
     return (p == TR_PRI_LOW)
         || (p == TR_PRI_NORMAL)
-        || (p == TR_PRI_HIGH);
+        || (p == TR_PRI_HIGH)
+        || (p == TR_PRI_SEQ);
 }
 
 /***

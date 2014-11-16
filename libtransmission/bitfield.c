@@ -127,6 +127,16 @@ tr_bitfieldCountRange (const tr_bitfield * b, size_t begin, size_t end)
   return countRange (b, begin, end);
 }
 
+size_t
+tr_bitfieldFirstZero(const tr_bitfield * b, size_t begin, size_t end)
+{
+    size_t i;
+    for (i = begin; i < end; i++)
+        if (!tr_bitfieldHas(b, i))
+            return i;
+    return end;
+}
+
 bool
 tr_bitfieldHas (const tr_bitfield * b, size_t n)
 {

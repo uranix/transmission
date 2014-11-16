@@ -613,6 +613,7 @@ renderPriority (GtkTreeViewColumn  * column UNUSED,
   gtk_tree_model_get (model, iter, FC_PRIORITY, &priority, -1);
   switch (priority)
     {
+      case TR_PRI_SEQ:    text = _("Sequential"); break;
       case TR_PRI_HIGH:   text = _("High"); break;
       case TR_PRI_NORMAL: text = _("Normal"); break;
       case TR_PRI_LOW:    text = _("Low"); break;
@@ -708,7 +709,8 @@ onViewPathToggled (GtkTreeView       * view,
           switch (priority)
             {
               case TR_PRI_NORMAL: priority = TR_PRI_HIGH; break;
-              case TR_PRI_HIGH:   priority = TR_PRI_LOW; break;
+              case TR_PRI_HIGH:   priority = TR_PRI_SEQ; break;
+              case TR_PRI_SEQ:    priority = TR_PRI_LOW; break;
               default:            priority = TR_PRI_NORMAL; break;
             }
           tr_torrentSetFilePriorities (tor,

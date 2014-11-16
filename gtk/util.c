@@ -471,9 +471,11 @@ gtr_combo_box_get_active_enum (GtkComboBox * combo_box)
 GtkWidget *
 gtr_priority_combo_new (void)
 {
-  return gtr_combo_box_new_enum (_("High"),   TR_PRI_HIGH,
-                                 _("Normal"), TR_PRI_NORMAL,
-                                 _("Low"),    TR_PRI_LOW,
+  return gtr_combo_box_new_enum (
+                                 _("Sequential"),   TR_PRI_SEQ,
+                                 _("High"),         TR_PRI_HIGH,
+                                 _("Normal"),       TR_PRI_NORMAL,
+                                 _("Low"),          TR_PRI_LOW,
                                  NULL);
 }
 
